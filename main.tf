@@ -40,7 +40,7 @@ resource "aws_security_group" "allow_ssh" {
 }
 
 resource "aws_instance" "test_server" {
-  ami           = "ami-0440d3b780d96b29d"
+  ami           = "ami-0c7217cdde317cfec"
   instance_type = "t2.micro"
   key_name = "deployer"
   security_groups = [aws_security_group.allow_ssh.name]
