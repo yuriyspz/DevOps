@@ -8,7 +8,7 @@ terraform {
     required_version = ">= 1.2.0"
 }
 
-resource "random_password" "password" {
+resource "random_password" "this_password" {
   length           = 16
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
@@ -25,8 +25,8 @@ resource "aws_secretsmanager_secret" "my_secret" {
 }
 
 resource "aws_secretsmanager_secret_version" "pass_value" {
-  secret_id = aws_secretsmanager_secret.my_secret.id
-  secret_string = random_password.password.result
+  secret_id     = aws_secretsmanager_secret.my_secret.id
+  secret_string = random_password.this_password.result
   
 }
 
@@ -36,8 +36,8 @@ resource "aws_key_pair" "deployer" {
 }
 
 resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic"
+  name          = "allow_ssh"
+  description   = "Allow SSH inbound traffic"
   
   ingress {
     description = "SSH from VPC"
@@ -56,13 +56,13 @@ resource "aws_security_group" "allow_ssh" {
 }
 
 resource "aws_instance" "test_server" {
-  ami           = var.ubuntu_ami
-  instance_type = var.free_tier_instance_type
-  key_name = "deployer"
+  ami             = var.ubuntu_ami
+  instance_type   = var.free_tier_instance_type
+  key_name        = "deployer"
   security_groups = [aws_security_group.allow_ssh.name]
   
   ### Install Docker
-  user_data = file("docker.sh")
+  user_data       = file("docker.sh")
 
   tags = {
     Name = "test_server"
