@@ -8,9 +8,25 @@ terraform {
     required_version = ">= 1.2.0"
 }
 
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
 provider "aws" {
   profile = "default"
   region  = "us-east-1"
+}
+
+resource "aws_secretsmanager_secret" "my_secret" {
+  name = "my-secret"
+  
+}
+
+resource "aws_secretsmanager_secret_version" "pass_value" {
+  secret_id = aws_secretsmanager_secret.my_secret.id
+  secret_string = random_password.password.result
   
 }
 
@@ -40,8 +56,8 @@ resource "aws_security_group" "allow_ssh" {
 }
 
 resource "aws_instance" "test_server" {
-  ami           = "ami-0c7217cdde317cfec"
-  instance_type = "t2.micro"
+  ami           = var.ubuntu_ami
+  instance_type = var.free_tier_instance_type
   key_name = "deployer"
   security_groups = [aws_security_group.allow_ssh.name]
   
@@ -51,9 +67,4 @@ resource "aws_instance" "test_server" {
   tags = {
     Name = "test_server"
   }
-}
-
-output "aws_instance_public_ip" {
-  value = aws_instance.test_server.public_ip
-  
 }
