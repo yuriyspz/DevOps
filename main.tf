@@ -38,6 +38,5 @@ resource "aws_key_pair" "deployer" {
 
 module "ec2" {
   source = "./ec2"
-  
 }
 
