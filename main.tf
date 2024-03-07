@@ -20,7 +20,8 @@ provider "aws" {
 }
 
 resource "aws_secretsmanager_secret" "my_secret" {
-  name = "my-secret"
+  name = "my-test-secret"
+  recovery_window_in_days = 0
   
 }
 
@@ -35,36 +36,8 @@ resource "aws_key_pair" "deployer" {
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
-resource "aws_security_group" "allow_ssh" {
-  name          = "allow_ssh"
-  description   = "Allow SSH inbound traffic"
+module "ec2" {
+  source = "./ec2"
   
-  ingress {
-    description = "SSH from VPC"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
-resource "aws_instance" "test_server" {
-  ami             = var.ubuntu_ami
-  instance_type   = var.free_tier_instance_type
-  key_name        = "deployer"
-  security_groups = [aws_security_group.allow_ssh.name]
-  
-  ### Install Docker
-  user_data       = file("docker.sh")
-
-  tags = {
-    Name = "test_server"
-  }
-}
