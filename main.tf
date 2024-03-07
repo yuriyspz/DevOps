@@ -20,7 +20,8 @@ provider "aws" {
 }
 
 resource "aws_secretsmanager_secret" "my_secret" {
-  name = "my-secret"
+  name = "my-test-secret"
+  recovery_window_in_days = 0
   
 }
 
@@ -33,11 +34,6 @@ resource "aws_secretsmanager_secret_version" "pass_value" {
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer"
   public_key = file("~/.ssh/id_rsa.pub")
-}
-
-module "security_groups" {
-  source = "./sg"
-  
 }
 
 module "ec2" {
