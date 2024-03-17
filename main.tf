@@ -6,6 +6,13 @@ terraform {
         }
     }
     required_version = ">= 1.2.0"
+
+    backend "s3" {
+        bucket = "yuriitfbucket"
+        key    = "terraform.tfstate"
+        region = "us-east-1"
+      
+    }
 }
 
 resource "random_password" "this_password" {
@@ -39,4 +46,3 @@ resource "aws_key_pair" "deployer" {
 module "ec2" {
   source = "./ec2"
 }
-
