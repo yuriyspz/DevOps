@@ -1,6 +1,6 @@
 variable "ubuntu_ami" {
   description = "The AMI to use for the server"
-  default     = "ami-0c7217cdde317cfec"
+  default     = "ami-0c101f26f147fa7fd"
   type        = string
   
 }
