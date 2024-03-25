@@ -13,3 +13,7 @@ echo \
 sudo apt-get update
 
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose docker-compose-plugin -y
+sudo git clone https://github.com/danliaudan/DevOps-tasks-for-practice.git
+cd DevOps-tasks-for-practice/Python-api/
+sudo docker build -t py-app .
+sudo docker run -p 5000:5000 py-app
